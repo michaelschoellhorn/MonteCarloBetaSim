@@ -1,9 +1,5 @@
 //This class describes electron scattering in matter
-#include<iostream>
-#include<fstream>
-#include<cmath>
-#include<vector>
-#include<random_distribution.h>
+#include"electron.h"
 
 using namespace std;
 
@@ -18,17 +14,12 @@ const double E_0 = 20;           // energy of electrons
 const double E_MIN = 0.02;       // minimum energy of electrons
 
 
-class electron{
-public :
-  electron(double x1, double y1, double z1, double E1 , double theta1, double phi1);
-  ~electron();
-  double x;
-  double y;
-  double z;
-  double E;
-  double theta;
-  double phi;
-};
+//init random number generators
+RandomDistribution rnMeanFreePath(*expDecay, 0.0, 10.0, 1024); //mean free path
+RandomDistribution rnPhi(*uniform, 0.0, 2*M_PI, 1024);         //azimutal angle phi
+RandomDistribution rnMoeller(*moeller, 0.2, M_PI_2, 1024);     //moeller theta in c.m.
+RandomDistribution rnMott(*mott, 0.2, M_PI, 1024);             //mott theta in c.m.
+RandomDistribution rnRatio(*uniform, 0.0, 1.0, 2048);          //Ratio [0, 1) to decide between moeller and mott
 
 
 electron::electron(double x1, double y1, double z1, double E1 , double theta1, double phi1) {
@@ -73,14 +64,14 @@ int nextcoord(electron *e1, electron *e2)
 // transform angles into target system
 // calculate new momenta and energies 
     double n_theta;
-    if (r2->Rndm()<0.5) { // Mott-Streuung
-      n_theta = 1; //f_mott->GetRandom();
+    if (rnRatio.get()<0.5) { // Mott-Streuung
+      n_theta = rnMott.get(); //f_mott->GetRandom();
       theta1 = n_theta;
       p1 = p;
       p2 = 0;    
     }
     else {
-      n_theta = 1; //f_moll->GetRandom();
+      n_theta = rnMoeller.get(); //f_moll->GetRandom();
       // double n_theta = f_mott->GetRandom();
       gamma = (e1->E+2*me)/sqrt(2*me*(2*me+e1->E));
       theta1 = atan2(sin(n_theta),gamma*(cos(n_theta)+1));
@@ -153,54 +144,35 @@ void elektron(void)
 {
     ofstream outfile;
     ofstream logfile;
-    vector<electron> elektrons;    // List of electron objects (see root User's guide)
+    vector<electron *> electrons;    // List of electron objects (see root User's guide)
     electron* e1;       // first electron (whose trajectory is followed)
     electron* e2;       // second electron (which is just produced and traced afterwards)
     
-    int k = 0;
     
     // define functions for random number generator
-    f_length = new TF1("f_length", "exp(-x)" ,0 ,10);   // mean free path
-    f_phi = new TF1("f_phi", "1" ,0 , 2*pi);             // azimuthal angle
-    f_moll = new TF1("f_moll",                         // Moeller scattering in c.m. system
-		     "pow(3+cos(x),2)/pow(sin(x),4)"
-		     ,0.2 ,pi/2);
-    f_mott = new TF1("f_mott",
-		     "pow(cos(x/2),2)/pow(sin(x/2),4)",0.02,pi);
+        // azimuthal angle
+    //f_moll = new TF1("f_moll",                         // Moeller scattering in c.m. system
+    //    "pow(3+cos(x),2)/pow(sin(x),4)"
+		//    ,0.2 ,pi/2);
+    //f_mott = new TF1("f_mott",
+		//     "pow(cos(x/2),2)/pow(sin(x/2),4)",0.02,pi);
     // The cross section cannot be integrated to 0 degrees, 
     // a too small starting angle will never produce
     // branches, therefore 0.2 rad is a good compromise
     
-    c1->cd();
-    view = TView::CreateView(1);
-    //    view = new CreateView(1);
-    view->SetRange(0,0,0,100,100,200);
-    view->ShowAxis();
-    
-    for (int n = 0; n < N_ELEC; n++) {
-	// loop for electrons
-	cout << "electron #" << n << endl;
-	electrons.Add(new electron(50, 50 ,0 ,E_0, 0, 0));  // push new electron on stack
-	while (1) {
-	    e1 = (electron*)electrons.First();              // pop next starting point from stack
-	    if (e1==NULL) break;
-	    electrons.Remove(e1);                           // remove it from the stack  
-	    traj = new TPolyLine3D(1024);
-	    k = 0;
-	    traj->SetPoint(k, e1->x, e1->y, e1->z);
-	    traj->Draw();                                                                   
-	    k++;
+  for (int n = 0; n < N_ELEC; n++) {
+	  // loop for electrons
+	  cout << "electron #" << n << endl;
+	  electrons.push_back(new electron(50, 50 ,0 ,E_0, 0, 0));  // push new electron on stack
+	  while (!electrons.empty()) {
+	    e1 = electrons.back();              // pop next starting point from stack
+	    electrons.pop_back();                           // remove it from the stack  
 	    while (1) {
-		e2 = new electron(0, 0 ,0 ,0 , 0, 0);
-		int ret=nextcoord(e1, e2);
-		traj->SetPoint(k, e1->x, e1->y, e1->z);
-		traj->Draw();
-		k++;
-		if (ret == 0) break;
-		if (e2->E > E_MIN) electrons.Add(e2);     // put secondary electron on the stack
+		    e2 = new electron(0, 0 ,0 ,0 , 0, 0);
+		    int ret=nextcoord(e1, e2);
+		    if (ret == 0) break;
+		    if (e2->E > E_MIN) electrons.push_back(e2);     // put secondary electron on the stack
 	    }  // end while
-      }
-      c1->Modified();
-      c1->Update();                                                                   
+    }                                                                 
   }  // end for
 }
