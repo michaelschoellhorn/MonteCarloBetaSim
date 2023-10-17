@@ -34,6 +34,11 @@ electron::electron(double x1, double y1, double z1, double E1 , double theta1, d
 electron::~electron(){}
 
 
+string electron::getPos(){
+  return to_string(x)+" "+to_string(y)+" "+to_string(z);
+}
+
+
 int nextcoord(electron *e1, electron *e2) 
 {
 
@@ -54,8 +59,8 @@ int nextcoord(electron *e1, electron *e2)
 // Moeller scattering
 //    double n_theta = f_theta->GetRandom();
 
-    double n_phi = 1; //f_phi->GetRandom();
-    double len= 1; //f_length->GetRandom()*pow(e1->E/1,2)/50; // scattering length (scales with 1/E^2)
+    double n_phi = rnPhi.get(); //f_phi->GetRandom();
+    double len= rnMeanFreePath.get()*pow(e1->E/1.0, 2.0)/50; //f_length->GetRandom()*pow(e1->E/1,2)/50; // scattering length (scales with 1/E^2)
     
     //    cout << "th, phi, len, E:" << n_theta << " " << n_phi << " " << len << " " << e1->E << endl;
     double p = sqrt(pow(e1->E+me,2)-me*me);    // Momentum of e1 in target system
