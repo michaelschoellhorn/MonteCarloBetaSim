@@ -22,6 +22,10 @@ RandomDistribution rnMott(*mott, 0.2, M_PI, 1024);             //mott theta in c
 RandomDistribution rnRatio(*uniform, 0.0, 1.0, 2048);          //Ratio [0, 1) to decide between moeller and mott
 
 
+//init logfile
+ofstream logfile;
+
+
 electron::electron(double x1, double y1, double z1, double E1 , double theta1, double phi1) {
   x=x1;
   y=y1;
@@ -35,13 +39,14 @@ electron::~electron(){}
 
 
 string electron::getPos(){
-  return to_string(x)+" "+to_string(y)+" "+to_string(z);
+  return to_string(x)+", "+to_string(y)+", "+to_string(z)+"\n";
 }
 
 
 int nextcoord(electron *e1, electron *e2) 
 {
-
+//log position
+    logfile << e1->getPos() << endl;
 // Keep starting position of struck electron e2
 
     e2->x = e1->x;
@@ -147,8 +152,7 @@ int nextcoord(electron *e1, electron *e2)
 
 void elektron(void)
 {
-    ofstream outfile;
-    ofstream logfile;
+    logfile.open("log.csv");
     vector<electron *> electrons;    // List of electron objects (see root User's guide)
     electron* e1;       // first electron (whose trajectory is followed)
     electron* e2;       // second electron (which is just produced and traced afterwards)
@@ -180,4 +184,5 @@ void elektron(void)
 	    }  // end while
     }                                                                 
   }  // end for
+  logfile.close();
 }
