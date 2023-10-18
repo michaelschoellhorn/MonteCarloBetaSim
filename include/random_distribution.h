@@ -1,5 +1,4 @@
-#ifndef RANDOM_DISTRIBUTION_H
-#define RANDOM_DISTRIBUTION_H
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -37,6 +36,3 @@ public:
     RandomDistribution(vector<double> (*dist_func)(vector<double>), double min, double max, int size);
     double get();
 };
-
-
-#endif // RANDOM_DISTRIBUTION_H

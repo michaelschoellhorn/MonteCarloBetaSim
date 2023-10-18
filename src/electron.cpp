@@ -1,6 +1,5 @@
 //This class describes electron scattering in matter
 #include"electron.h"
-#include"globals.h"
 
 using namespace std;
 
@@ -16,11 +15,11 @@ electron::electron(double x1, double y1, double z1, double E1 , double theta1, d
 
 electron::~electron(){}
 
-
+/*
 string electron::getPos(){
   return to_string(x)+", "+to_string(y)+", "+to_string(z)+"\n";
 }
-
+*/
 
 int nextcoord(electron *e1, electron *e2) 
 {
