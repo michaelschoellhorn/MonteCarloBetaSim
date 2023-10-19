@@ -2,7 +2,7 @@
 
 using namespace std;
 
-
+//utility functions
 vector<double> linspace(double lower, double upper, int bins){
     double diff = (upper-lower)/double(bins);
     vector<double> x(bins+1);
@@ -13,6 +13,7 @@ vector<double> linspace(double lower, double upper, int bins){
 }
 
 
+//distribution functions:
 vector<double> mott(vector<double> v){
     vector<double> y(v.size());
     for (int i = 0; i!=v.size(); i++){
@@ -49,6 +50,7 @@ vector<double> expDecay(vector<double> v){
 }
 
 
+//RandomDistribution class definition
 RandomDistribution::RandomDistribution(vector<double> (*dist_func)(vector<double>), double min, double max, int size)
     :generator(random_device()()), index(0), size(size) {
     //get P(y)
