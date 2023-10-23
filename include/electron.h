@@ -20,7 +20,7 @@ public :
 };
 
 
-int nextcoord(electron *e1, electron *e2);
+int nextcoord(electron *e1, electron *e2, ofstream& outputFile);
 
 
 void elektron(void);

@@ -21,10 +21,9 @@ string electron::getPos(){
 }
 */
 
-int nextcoord(electron *e1, electron *e2) 
+int nextcoord(electron *e1, electron *e2, ofstream& outputFile) 
 {
-//log position
-    //logfile << e1->getPos() << endl;
+
 // Keep starting position of struck electron e2
 
     e2->x = e1->x;
@@ -81,7 +80,11 @@ int nextcoord(electron *e1, electron *e2)
     //    cout << "th1: " << theta1 << " th2: " << theta2 << " E1: " << e1->E << " E2: " << e2->E << endl;
 
 // stop if no energy left
-    if (e1->E <= E_MIN) {return 0;}
+    if (e1->E <= E_MIN) {
+      //log position for final time:
+      outputFile << e1->x << " " << e1->y << " " << e1->z <<"\n";
+      return 0;
+    }
   
 // transform into cartesian coordinates (x',y',z') 
 
@@ -121,23 +124,23 @@ int nextcoord(electron *e1, electron *e2)
     }
 
 // stop if electron leaves detector
-    if ((e1->x < 0) || (e1->x>X_MAX)) {cout << "detector left at x:" << e1->x << endl; return 0;} 
+    if ((e1->x < 0) || (e1->x>X_MAX)) {cout << "detector left at x:" << e1->x << endl; return 0;} //no data logging in this case!
     if ((e1->y < 0) || (e1->y>Y_MAX)) {cout << "detector left at y:" << e1->y << endl; return 0;}
 
+  //log data
+  outputFile << e1->x << " " << e1->y << " " << e1->z << "\n";
   // return value 1 means success
     return 1;
 }
 
 void elektron(void)
 {
-    //logfile.open("log.csv");
+    ofstream outputFile("coordinates.txt"); //opens stream to file
     vector<electron *> electrons;    // List of electron objects (see root User's guide)
     electron* e1;       // first electron (whose trajectory is followed)
     electron* e2;       // second electron (which is just produced and traced afterwards)
     
     
-    // define functions for random number generator
-        // azimuthal angle
     //f_moll = new TF1("f_moll",                         // Moeller scattering in c.m. system
     //    "pow(3+cos(x),2)/pow(sin(x),4)"
 		//    ,0.2 ,pi/2);
@@ -146,21 +149,31 @@ void elektron(void)
     // The cross section cannot be integrated to 0 degrees, 
     // a too small starting angle will never produce
     // branches, therefore 0.2 rad is a good compromise
-    
-  for (int n = 0; n < N_ELEC; n++) {
-	  // loop for electrons
-	  cout << "electron #" << n << endl;
-	  electrons.push_back(new electron(50, 50 ,0 ,E_0, 0, 0));  // push new electron on stack
-	  while (!electrons.empty()) {
-	    e1 = electrons.back();              // pop next starting point from stack
-	    electrons.pop_back();                           // remove it from the stack  
-	    while (1) {
-		    e2 = new electron(0, 0 ,0 ,0 , 0, 0);
-		    int ret=nextcoord(e1, e2);
-		    if (ret == 0) break;
-		    if (e2->E > E_MIN) electrons.push_back(e2);     // put secondary electron on the stack
-	    }  // end while
-    }                                                                 
-  }  // end for
-  //logfile.close();
+  if (outputFile.is_open()){
+    cout << "Outputfile successful opened!" << endl;
+    for (int n = 0; n < 50; n++) {
+      // loop for electrons
+      cout << "electron #" << n << endl;
+      electrons.push_back(new electron(50, 50 ,0 ,E_0, 0, 0));  // push new electron on stack
+      while (!electrons.empty()) {
+        e1 = electrons.back();              // pop next starting point from stack
+        electrons.pop_back();               // remove it from the stack  
+        outputFile << e1->x << " " << e1->y << " " << e1->z << "\n"; //log first position
+        while (1) {
+          e2 = new electron(0, 0 ,0 ,0 , 0, 0);
+          int ret=nextcoord(e1, e2, outputFile);
+          if (ret == 0) {
+            outputFile << endl; //to flush buffer and 
+            break;
+          }
+          if (e2->E > E_MIN) electrons.push_back(e2);     // put secondary electron on the stack
+        }  // end while
+      }                                                                 
+    } // end for
+    outputFile.close();
+  }
+  else{
+    cout << "File can't be opened"<<endl;
+  } 
+  
 }
