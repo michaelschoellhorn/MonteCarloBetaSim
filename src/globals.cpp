@@ -13,7 +13,7 @@ const double E_MIN = 0.02;       // minimum energy of electrons
 
 
 //init random number generators
-RandomDistribution rnMeanFreePath(*expDecay, 0.0, 10.0, 1024); //mean free path
+RandomDistribution rnMeanFreePath(*expDecay, 1E-16, 10.0, 1024); //mean free path
 RandomDistribution rnPhi(*uniform, 0.0, 2*M_PI, 1024);         //azimutal angle phi
 RandomDistribution rnMoeller(*moeller, 0.2, M_PI_2, 1024);     //moeller theta in c.m.
 RandomDistribution rnMott(*mott, 0.2, M_PI, 1024);             //mott theta in c.m.

@@ -1,4 +1,4 @@
-//This class describes electron scattering in matter
+//This class describes the scattering of electrons in matter
 #include"electron.h"
 
 using namespace std;
@@ -37,29 +37,22 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
     double theta2;
 
 // calculate new coordinates
-
-// Moeller scattering
-//    double n_theta = f_theta->GetRandom();
-
-    double n_phi = rnPhi.get(); //f_phi->GetRandom();
-    double len= rnMeanFreePath.get()*pow(e1->E/1.0, 2.0)/50; //f_length->GetRandom()*pow(e1->E/1,2)/50; // scattering length (scales with 1/E^2)
+    double n_phi = rnPhi.get(); 
+    double len= rnMeanFreePath.get()*pow(e1->E/1.0, 2.0)/50; // scattering length (scales with 1/E^2)
     
-    //    cout << "th, phi, len, E:" << n_theta << " " << n_phi << " " << len << " " << e1->E << endl;
     double p = sqrt(pow(e1->E+me,2)-me*me);    // Momentum of e1 in target system
-    double gamma;       // Gamma factor
-    //    cout << " g: " << gamma << " s: " << s<< " p: " << p << endl;   
+    double gamma;       // Gamma factor  
 // transform angles into target system
 // calculate new momenta and energies 
     double n_theta;
-    if (rnRatio.get()<0.5) { // Mott-Streuung
-      n_theta = rnMott.get(); //f_mott->GetRandom();
+    if (rnRatio.get()<0.5) { // mott scattering
+      n_theta = rnMott.get();
       theta1 = n_theta;
       p1 = p;
       p2 = 0;    
     }
-    else {
-      n_theta = rnMoeller.get(); //f_moll->GetRandom();
-      // double n_theta = f_mott->GetRandom();
+    else {//moeller scattering
+      n_theta = rnMoeller.get();
       gamma = (e1->E+2*me)/sqrt(2*me*(2*me+e1->E));
       theta1 = atan2(sin(n_theta),gamma*(cos(n_theta)+1));
       theta2 = atan2(sin(n_theta),gamma*(1-cos(n_theta)));
@@ -75,9 +68,6 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
     else {
       e2->E = 0;
     }
-
-    //    cout << "g: " << gamma << " len: "<< len << " p1: " << p1 << " p2: " << p2 << endl;
-    //    cout << "th1: " << theta1 << " th2: " << theta2 << " E1: " << e1->E << " E2: " << e2->E << endl;
 
 // stop if no energy left
     if (e1->E <= E_MIN) {
@@ -139,13 +129,7 @@ void elektron(void)
     vector<electron *> electrons;    // List of electron objects (see root User's guide)
     electron* e1;       // first electron (whose trajectory is followed)
     electron* e2;       // second electron (which is just produced and traced afterwards)
-    
-    
-    //f_moll = new TF1("f_moll",                         // Moeller scattering in c.m. system
-    //    "pow(3+cos(x),2)/pow(sin(x),4)"
-		//    ,0.2 ,pi/2);
-    //f_mott = new TF1("f_mott",
-		//     "pow(cos(x/2),2)/pow(sin(x/2),4)",0.02,pi);
+
     // The cross section cannot be integrated to 0 degrees, 
     // a too small starting angle will never produce
     // branches, therefore 0.2 rad is a good compromise
