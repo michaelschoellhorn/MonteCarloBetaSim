@@ -71,8 +71,6 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
 
 // stop if no energy left
     if (e1->E <= E_MIN) {
-      //log position for final time:
-      outputFile << e1->x << " " << e1->y << " " << e1->z <<"\n";
       return 0;
     }
   
