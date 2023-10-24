@@ -112,7 +112,7 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
 
 void elektron(void)
 {
-    ofstream outputFile("coordinates.txt"); // opens stream to file
+    ofstream outputFile(OUTPUT_PATH); // opens stream to file
     vector<electron *> electrons;           // List of electron pointers to keep track of all electrons
     electron* e1;                           // electron which trajectory is currently followed
     electron* e2;                           // target electron which may be produced and put in the list for later

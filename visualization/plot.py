@@ -1,12 +1,12 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-binpath = 'build/bin/'
+datapath = ''
 filename = 'coordinates.txt'
 
 try:
     # Read data from the file
-    with open(binpath + filename, 'r') as file:
+    with open(datapath + filename, 'r') as file:
         lines = file.read().strip().split('\n\n')
     
     # Initialize 3D plot
@@ -30,4 +30,4 @@ try:
     plt.show()
 
 except FileNotFoundError:
-    print(f"plot.py can't find {filename} in directory {binpath}\nPlease check naming or path of the simulation outputfile")
+    print(f"plot.py can't find datafile {filename}\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
