@@ -18,7 +18,7 @@ try:
         # Split each line block into coordinates
         coordinates = line_block.split('\n')
         x, y, z = zip(*(map(float, coord.split()) for coord in coordinates))
-        ax.plot(x, y, z)
+        ax.plot(x, y, z, c='blue', linewidth=0.5)
 
     # Set labels and title
     ax.set_xlabel('x position')
