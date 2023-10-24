@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 binpath = 'build/bin/'
-filename = 'coordinates0.txt'
+filename = 'coordinates.txt'
 
 try:
     # Read data from the file
