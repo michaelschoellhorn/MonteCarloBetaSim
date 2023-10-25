@@ -105,7 +105,7 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
     if ((e1->y < 0) || (e1->y>Y_MAX)) {cout << "detector left at y:" << e1->y << endl; return 0;}
 
 // Log position data
-  outputFile << e1->x << " " << e1->y << " " << e1->z << "\n";
+  outputFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n";
 // return value 1 means success
     return 1;
 }
@@ -127,7 +127,7 @@ void elektron(void)
       while (!electrons.empty()) {
         e1 = electrons.back();              // get next electron from stack/list
         electrons.pop_back();               // remove it from the stack/list 
-        outputFile << e1->x << " " << e1->y << " " << e1->z << "\n"; //log initial position
+        outputFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n"; //log initial position and energy
         while (1) {
           e2 = new electron(0, 0 ,0 ,0 , 0, 0);
           int ret=nextcoord(e1, e2, outputFile);        //propagate electron

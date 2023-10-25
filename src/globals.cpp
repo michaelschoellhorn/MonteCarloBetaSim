@@ -2,7 +2,7 @@
 
 
 // System constants
-extern const string OUTPUT_PATH = "../visualization/coordinates.txt";
+extern const string OUTPUT_PATH = "../../visualization/coordinates.txt";
 
 // Physical constants
 const double pi = M_PI;   // pi
