@@ -3,5 +3,6 @@
 #include "globals.h"
 
 int main(){
-    elektron();
+    simulation sim(OUTPUT_PATH);
+    sim.run();
 }

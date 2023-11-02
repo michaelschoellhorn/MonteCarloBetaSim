@@ -16,7 +16,12 @@ electron::electron(double x1, double y1, double z1, double E1 , double theta1, d
 electron::~electron(){}
 
 
-int nextcoord(electron *e1, electron *e2, ofstream& outputFile) 
+simulation::simulation(string outputFileName){
+  outputFile = ofstream(outputFileName); // opens stream to file
+}
+
+
+int simulation::nextcoord(electron *e1, electron *e2) 
 {
 
 // Keep starting position for struck electron e2
@@ -110,13 +115,8 @@ int nextcoord(electron *e1, electron *e2, ofstream& outputFile)
     return 1;
 }
 
-void elektron(void)
-{
-    ofstream outputFile(OUTPUT_PATH); // opens stream to file
-    vector<electron *> electrons;           // List of electron pointers to keep track of all electrons
-    electron* e1;                           // electron which trajectory is currently followed
-    electron* e2;                           // target electron which may be produced and put in the list for later
-
+void simulation::run()
+{            
   if (outputFile.is_open()){
     cout << "Outputfile successfully opened!" << endl;
     // loop over electrons to be traced
@@ -130,7 +130,7 @@ void elektron(void)
         outputFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n"; //log initial position and energy
         while (1) {
           e2 = new electron(0, 0 ,0 ,0 , 0, 0);
-          int ret=nextcoord(e1, e2, outputFile);        //propagate electron
+          int ret=nextcoord(e1, e2);       //propagate electron
           if (ret == 0) {
             outputFile << endl; //to flush buffer and 
             break;              //break if electron left detector or E_electron<E_min
