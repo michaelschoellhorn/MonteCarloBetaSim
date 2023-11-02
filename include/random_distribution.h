@@ -9,18 +9,13 @@ using namespace std;
 
 vector<double> linspace(double lower, double upper, int bins);
 
-
 vector<double> mott(vector<double> v);
-
 
 vector<double> moeller(vector<double> v);
 
+vector<double> uniform(vector<double> v);
 
-vector<double> uniform(vector<double>v);
-
-
-vector<double> expDecay(vector<double>v);
-
+vector<double> expDecay(vector<double> v);
 
 class RandomDistribution
 {

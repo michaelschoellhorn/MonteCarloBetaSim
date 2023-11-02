@@ -11,7 +11,7 @@ try:
     # Read data from the file
     with open(datapath + filename, 'r') as file:
         line_blocks = file.read().strip().split('\n\n')
-        
+
     # Initialize 3D plot
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
@@ -22,7 +22,8 @@ try:
     for i in range(len(line_blocks)):
         # Split each line block into coordinates
         coordinates = line_blocks[i].split('\n')
-        x_block, y_block, z_block, e_block = zip(*(map(float, coord.split()) for coord in coordinates))
+        x_block, y_block, z_block, e_block = zip(
+            *(map(float, coord.split()) for coord in coordinates))
         line = []
         for j in range(len(x_block)-1):
             energy.append(e_block[j])
@@ -45,7 +46,7 @@ try:
 
     # Add a colorbar to show the mapping of line segments to colors
     fig.colorbar(lc, ax=ax, label='electron energy')
-             
+
     # Set labels and title
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
@@ -60,4 +61,5 @@ try:
     plt.show()
 
 except FileNotFoundError:
-    print(f"plot.py can't find datafile {filename}\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
+    print(
+        f"plot.py can't find datafile {filename}\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")

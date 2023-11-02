@@ -3,7 +3,8 @@
 #include "simulation.h"
 #include "globals.h"
 
-int main(){
+int main()
+{
     simulation sim(OUTPUT_PATH);
     sim.run();
 }
