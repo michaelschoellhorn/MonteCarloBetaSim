@@ -5,6 +5,6 @@
 
 int main()
 {
-    simulation sim(OUTPUT_PATH);
+    simulation sim(OUTPUT_PATH + "coordinates.txt", OUTPUT_PATH + "energyGrid.txt");
     sim.run();
 }

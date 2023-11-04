@@ -3,4 +3,4 @@ main.exe
 build/
 old data/
 visualization/coordinates.txt
-visualization/energy.txt
+visualization/energyGrid.txt

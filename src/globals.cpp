@@ -1,17 +1,17 @@
 #include "globals.h"
 
 // System constants
-extern const string OUTPUT_PATH = "../../visualization/coordinates.txt";
+extern const string OUTPUT_PATH = "../../visualization/";
 
 // Physical constants
 const double pi = M_PI;  // pi
 const double me = 0.511; // electron mass [MeV]
 
 // Simulation constants
-const int N_ELEC = 50;     // number of electrons
+const int N_ELEC = 400;     // number of electrons
 const double X_MAX = 100;  // x-size of the detector
 const double Y_MAX = 100;  // y-size of the detector
-const double E_0 = 20;     // energy of electrons
+const double E_0 = 30;     // energy of electrons
 const double E_MIN = 0.02; // minimum energy of electrons
 
 // Init random number generators

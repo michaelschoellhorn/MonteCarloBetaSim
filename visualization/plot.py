@@ -50,7 +50,7 @@ try:
     # Set labels and title
     ax.set_xlim(0, 100)
     ax.set_ylim(0, 100)
-    ax.set_zlim(0, 100)
+    ax.set_zlim(0, 200)
 
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')

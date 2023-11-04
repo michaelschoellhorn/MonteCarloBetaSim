@@ -1,8 +1,10 @@
 #include "simulation.h"
 
-simulation::simulation(string outputFileName)
+simulation::simulation(string coordFileName, string gridFileName)
 {
-    outputFile = ofstream(outputFileName); // opens stream to file
+    coordFile = ofstream(coordFileName); // open streams to files
+    gridFile = ofstream(gridFileName);
+    energyGrid = vector<vector<vector<double>>>(int(X_MAX / 10), vector<vector<double>>(int(Y_MAX / 10), vector<double>(10)));
 }
 
 int simulation::nextcoord(electron *e1, electron *e2)
@@ -12,6 +14,7 @@ int simulation::nextcoord(electron *e1, electron *e2)
     e2->x = e1->x;
     e2->y = e1->y;
     e2->z = e1->z;
+    double energy = e1->E;
     double otheta = e1->theta; // old theta needed for transformation
     double ophi = e1->phi;     // old phi
     double p1;
@@ -29,15 +32,15 @@ int simulation::nextcoord(electron *e1, electron *e2)
     double n_theta;
 
     // get new momenta and thetas from Mott or moeller scattering
-    if (rnRatio.get() < 0.5)// mott scattering
-    { 
+    if (rnRatio.get() < 0.5) // mott scattering
+    {
         n_theta = rnMott.get();
         theta1 = n_theta;
         p1 = p;
         p2 = 0;
     }
-    else// moeller scattering
-    { 
+    else // moeller scattering
+    {
         n_theta = rnMoeller.get();
         gamma = (e1->E + 2 * me) / sqrt(2 * me * (2 * me + e1->E));
         theta1 = atan2(sin(n_theta), gamma * (cos(n_theta) + 1));
@@ -110,44 +113,69 @@ int simulation::nextcoord(electron *e1, electron *e2)
     }
 
     // Log position data
-    outputFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n";
+    coordFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n";
+    if (e1->z < 100)
+    {
+        energyGrid[(int)e1->x / 10][(int)e1->y / 10][(int)e1->z / 10] += energy - e1->E - e2->E;
+    }
     // return value 1 means success
     return 1;
 }
 
 void simulation::run()
 {
-    if (outputFile.is_open())
+    if (coordFile.is_open())
     {
-        cout << "Outputfile successfully opened!" << endl;
+        cout << "coordinate file successfully opened!" << endl;
         // loop over electrons to be traced
         for (int n = 0; n < N_ELEC; n++)
         {
             cout << "electron #" << n << endl;
             electrons.push_back(new electron(50.0, 50.0, 0.0, E_0, 0.0, 0.0)); // put a new electron on the stack
-            while (!electrons.empty())// loop over current traced electron and all secondaries
+            while (!electrons.empty())                                         // loop over current traced electron and all secondaries
             {
-                e1 = electrons.back();                                                       // get next electron from stack/list
-                electrons.pop_back();                                                        // remove it from the stack/list
-                outputFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n"; // log initial position and energy
+                e1 = electrons.back();                                                      // get next electron from stack/list
+                electrons.pop_back();                                                       // remove it from the stack/list
+                coordFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n"; // log initial position and energy
                 while (1)
                 {
                     e2 = new electron(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
                     int ret = nextcoord(e1, e2); // propagate electron
                     if (ret == 0)
                     {
-                        outputFile << endl; // to flush buffer and
-                        break;              // break if electron left detector or E_electron<E_min
+                        coordFile << endl; // to flush buffer and
+                        break;             // break if electron left detector or E_electron<E_min
                     }
                     if (e2->E > E_MIN)
                         electrons.push_back(e2); // put secondary electron in list
                 }
             }
         }
-        outputFile.close();
+        coordFile.close();
+        if (gridFile.is_open())
+        {
+            cout << "energy file successfully opened!";
+            for (int i = 0; i != (int)X_MAX / 10; i++)
+            {
+                for (int j = 0; j != (int)Y_MAX / 10; j++)
+                {
+                    for (int k = 0; k != 10; k++)
+                    {
+                        gridFile << energyGrid[i][j][k] << " ";
+                    }
+                    gridFile << endl;
+                }
+            }
+            gridFile.close();
+        }
+        else
+        {
+            cout << "energyGrid file can't be opened!" << endl;
+        }
+
     }
     else
     {
-        cout << "File can't be opened" << endl;
+        cout << "coordinate file can't be opened!" << endl;
     }
 }
