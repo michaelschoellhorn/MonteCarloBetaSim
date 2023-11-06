@@ -4,7 +4,7 @@ simulation::simulation(string coordFileName, string gridFileName)
 {
     coordFile = ofstream(coordFileName); // open streams to files
     gridFile = ofstream(gridFileName);
-    energyGrid = vector<vector<vector<double>>>(int(X_MAX / 10), vector<vector<double>>(int(Y_MAX / 10), vector<double>(10)));
+    energyGrid = vector<vector<vector<double>>>(int(X_MAX / CELL_SIZE), vector<vector<double>>(int(Y_MAX / CELL_SIZE), vector<double>((int)Z_MAX / CELL_SIZE)));
 }
 
 int simulation::nextcoord(electron *e1, electron *e2)
@@ -111,12 +111,17 @@ int simulation::nextcoord(electron *e1, electron *e2)
         cout << "detector left at y:" << e1->y << endl;
         return 0;
     }
+    if ((e1->z < 0) || (e1->z > Z_MAX))
+    {
+        cout << "detector left at z:" << e1->z << endl;
+        return 0;
+    }
 
     // Log position data
     coordFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n";
-    if (e1->z < 100)
+    if (e1->z < Z_MAX)
     {
-        energyGrid[(int)e1->x / 10][(int)e1->y / 10][(int)e1->z / 10] += energy - e1->E - e2->E;
+        energyGrid[(int)e1->x / CELL_SIZE][(int)e1->y / CELL_SIZE][(int)e1->z / CELL_SIZE] += energy - e1->E - e2->E;
     }
     // return value 1 means success
     return 1;
@@ -155,11 +160,11 @@ void simulation::run()
         if (gridFile.is_open())
         {
             cout << "energy file successfully opened!";
-            for (int i = 0; i != (int)X_MAX / 10; i++)
+            for (int i = 0; i != (int)X_MAX / CELL_SIZE; i++)
             {
-                for (int j = 0; j != (int)Y_MAX / 10; j++)
+                for (int j = 0; j != (int)Y_MAX / CELL_SIZE; j++)
                 {
-                    for (int k = 0; k != 10; k++)
+                    for (int k = 0; k != (int)Z_MAX / CELL_SIZE; k++)
                     {
                         gridFile << energyGrid[i][j][k] << " ";
                     }
@@ -172,7 +177,6 @@ void simulation::run()
         {
             cout << "energyGrid file can't be opened!" << endl;
         }
-
     }
     else
     {
