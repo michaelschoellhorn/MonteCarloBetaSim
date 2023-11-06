@@ -6,6 +6,7 @@ X_MAX = 100
 Y_MAX = 100
 Z_MAX = 200
 CELL_SIZE = 10
+
 N = int(X_MAX*Y_MAX*Z_MAX/CELL_SIZE**3)
 nx = int(X_MAX/CELL_SIZE)
 ny = int(Y_MAX/CELL_SIZE)
