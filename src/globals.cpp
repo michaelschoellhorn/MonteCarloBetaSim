@@ -8,11 +8,13 @@ const double pi = M_PI;  // pi
 const double me = 0.511; // electron mass [MeV]
 
 // Simulation constants
-const int N_ELEC = 400;     // number of electrons
-const double X_MAX = 100;  // x-size of the detector
-const double Y_MAX = 100;  // y-size of the detector
-const double E_0 = 30;     // energy of electrons
-const double E_MIN = 0.02; // minimum energy of electrons
+const int N_ELEC = 400;   // number of electrons
+const double X_MAX = 100; // x-size of the detector
+const double Y_MAX = 100; // y-size of the detector
+const double Z_MAX = 200;
+const double E_0 = 20;      // energy of electrons
+const double E_MIN = 0.02;  // minimum energy of electrons
+const int CELL_SIZE = 10.0; // cell size for energy grid
 
 // Init random number generators
 RandomDistribution rnMeanFreePath(*expDecay, 1E-16, 10.0, 1024); // mean free path 1E-16 as minimal evaluation value to prevent division through zero errors
