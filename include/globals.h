@@ -14,8 +14,10 @@ extern const double me; // electron mass [MeV]
 extern const int N_ELEC;   // number of electrons
 extern const double X_MAX; // x-size of the detector
 extern const double Y_MAX; // y-size of the detector
-extern const double E_0;   // energy of electrons
-extern const double E_MIN; // minimum energy of electrons
+extern const double Z_MAX;
+extern const double E_0;    // energy of electrons
+extern const double E_MIN;  // minimum energy of electrons
+extern const int CELL_SIZE; // cell size for energy grid
 
 // Init random number generators
 extern RandomDistribution rnMeanFreePath; // mean free path 1E-16 as minimal evaluation value to prevent division through zero errors

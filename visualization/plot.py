@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.colors as colors
 from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
+X_MAX = 100
+Y_MAX = 100
+Z_MAX = 200
 
 datapath = 'visualization/'
 filename = 'coordinates.txt'
@@ -48,9 +51,9 @@ try:
     fig.colorbar(lc, ax=ax, label='electron energy')
 
     # Set labels and title
-    ax.set_xlim(0, 100)
-    ax.set_ylim(0, 100)
-    ax.set_zlim(0, 100)
+    ax.set_xlim(0, X_MAX)
+    ax.set_ylim(0, Y_MAX)
+    ax.set_zlim(0, Z_MAX)
 
     ax.set_xlabel('x position')
     ax.set_ylabel('y position')
