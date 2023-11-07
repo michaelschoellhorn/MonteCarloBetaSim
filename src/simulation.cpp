@@ -160,6 +160,7 @@ void simulation::run()
         if (gridFile.is_open())
         {
             cout << "energy file successfully opened!";
+            gridFile << X_MAX << " " << Y_MAX << " " << Z_MAX << " " << CELL_SIZE << " " << E_0 << endl;
             for (int i = 0; i != (int)X_MAX / CELL_SIZE; i++)
             {
                 for (int j = 0; j != (int)Y_MAX / CELL_SIZE; j++)
