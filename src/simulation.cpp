@@ -4,7 +4,7 @@ simulation::simulation(string coordFileName, string gridFileName)
 {
     coordFile = ofstream(coordFileName); // open streams to files
     gridFile = ofstream(gridFileName);
-    energyGrid = vector<vector<vector<double>>>(int(X_MAX / CELL_SIZE), vector<vector<double>>(int(Y_MAX / CELL_SIZE), vector<double>((int)Z_MAX / CELL_SIZE)));
+    energyGrid = vector<vector<vector<double>>>(int(X_MAX / CELL_SIZE), vector<vector<double>>(int(Y_MAX / CELL_SIZE), vector<double>(int(Z_MAX / CELL_SIZE))));
 }
 
 int simulation::nextcoord(electron *e1, electron *e2)
@@ -117,12 +117,9 @@ int simulation::nextcoord(electron *e1, electron *e2)
         return 0;
     }
 
-    // Log position data
+    // Log data
     coordFile << e1->x << " " << e1->y << " " << e1->z << " " << e1->E << "\n";
-    if (e1->z < Z_MAX)
-    {
-        energyGrid[(int)e1->x / CELL_SIZE][(int)e1->y / CELL_SIZE][(int)e1->z / CELL_SIZE] += energy - e1->E - e2->E;
-    }
+    energyGrid[static_cast<int>(e1->x / CELL_SIZE)][static_cast<int>(e1->y / CELL_SIZE)][static_cast<int>(e1->z / CELL_SIZE)] += energy - e1->E - e2->E;
     // return value 1 means success
     return 1;
 }
@@ -160,7 +157,9 @@ void simulation::run()
         if (gridFile.is_open())
         {
             cout << "energy file successfully opened!";
+            gridFile << "X_MAX Y_MAX Z_MAX CELL_SIZE E_0\n";
             gridFile << X_MAX << " " << Y_MAX << " " << Z_MAX << " " << CELL_SIZE << " " << E_0 << endl;
+            gridFile << "Format is x1y1z1...zn x1y2z1...zn ... x2y1z1...zn\n";
             for (int i = 0; i != (int)X_MAX / CELL_SIZE; i++)
             {
                 for (int j = 0; j != (int)Y_MAX / CELL_SIZE; j++)
