@@ -3,29 +3,38 @@ import numpy as np
 import matplotlib.colors as colors
 from mpl_toolkits.mplot3d.art3d import Line3DCollection
 
+# --------------- Constants -----------------
+# Paths to datafiles
+DATA_PATH = 'visualization/'
+FILENAME_COORDS = 'coordinates.txt'
+FILENAME_CONSTANTS = 'energyGrid.txt'
 
-datapath = 'visualization/'
-filename = 'coordinates.txt'
-
-# get constants
-X_MAX, Y_MAX, Z_MAX, CELL_SIZE, _ = np.loadtxt(
-    "visualization/energyGrid.txt", max_rows=1, skiprows=1, unpack=True)
-
-
+# Loading simulation constants
 try:
-    # Read data from the file
-    with open(datapath + filename, 'r') as file:
+    X_MAX, Y_MAX, Z_MAX, CELL_SIZE, _ = np.loadtxt(
+        DATA_PATH + FILENAME_CONSTANTS, max_rows=1, skiprows=1, unpack=True)
+
+except FileNotFoundError:
+    print(
+        f"plot.py can't find datafile {FILENAME_CONSTANTS} for loading simulation constants\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
+# --------------- xxxxxxxx ------------------
+
+# Loading data
+try:
+    with open(DATA_PATH + FILENAME_COORDS, 'r') as file:
         line_blocks = file.read().strip().split('\n\n')
 
 except FileNotFoundError:
     print(
-        f"plot.py can't find datafile {filename}\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
+        f"plot.py can't find datafile {FILENAME_COORDS}\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
 
+
+# ---------------- Plotting data --------------------
 # Initialize 3D plot
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-# Plot lines from the data blocks
+# Modify data
 lines = []
 energy = []
 for i in range(len(line_blocks)):
@@ -41,9 +50,9 @@ for i in range(len(line_blocks)):
         lines.append(line)
         line = []
 
-energy = np.array(energy)
-# Convert the list of line segments to a numpy array
+# Convert the list of line segments to numpy arrays
 lines = np.array(lines)
+energy = np.array(energy)
 
 # Create a Normalize object to map float values to the range [0, 1]
 norm = colors.Normalize(vmin=min(energy), vmax=max(energy))
@@ -68,3 +77,4 @@ ax.set_title('Path of electrons in matter')
 
 # Show the plot
 plt.show()
+# ------------------ xxxxxxx -------------------------
