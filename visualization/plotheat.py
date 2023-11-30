@@ -1,12 +1,23 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# get simulation constants
-X_MAX, Y_MAX, Z_MAX, CELL_SIZE, _ = np.loadtxt(
-    "visualization/energyGrid.txt", max_rows=1, skiprows=1, unpack=True)
+# --------------- Constants -----------------
+# Paths to datafiles
+DATA_PATH = 'visualization/'
+FILENAME = 'energyGrid.txt'
+
+# Loading simulation constants
+try:
+    X_MAX, Y_MAX, Z_MAX, CELL_SIZE, _ = np.loadtxt(
+        DATA_PATH + FILENAME, max_rows=1, skiprows=1, unpack=True)
+
+except FileNotFoundError:
+    print(
+        f"plot.py can't find datafile {FILENAME} for loading simulation constants\nPlease check naming or OUTPUT_PATH variable in src/globals.cpp")
+# --------------- xxxxxxxx ------------------
 
 # load and modify data
-data = np.loadtxt("visualization/energyGrid.txt", skiprows=3)
+data = np.loadtxt(DATA_PATH + FILENAME, skiprows=3)
 data3D = data.T.reshape(
     (int(Z_MAX/CELL_SIZE), int(X_MAX/CELL_SIZE), int(Y_MAX/CELL_SIZE)))
 hm = np.sum(data3D, axis=2)

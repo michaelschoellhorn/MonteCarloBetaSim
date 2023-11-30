@@ -5,3 +5,6 @@ MonteCarlo simulation of an electron beam hitting solid matter. Physical feature
 There are three different scripts for visualizing the paths of the electrons and the deposited energy in the medium. All plotting scripts need a working pathon3 installation aswell as the numpy and matplotlib packages to function properly.
 For the visualization of the taken paths, one can run plot.py in the visualization directory after running the simulation. The paths of the electrons are color coded with their energy value.
 plotgrid.py and plotheat.py both produce plots for the energy deposition. The first produces a 3D scatter plot, the second one a heatmap.
+
+## Examples
+For all visualization features example plots can be found in the examples subdirectory. 
